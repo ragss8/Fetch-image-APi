@@ -16,10 +16,10 @@ class App extends Component{
   }
 //This lifecycle is invoked automatically after component is mounted
   componentDidMount() {
-    fetch("https://dog.ceo/api/breeds/image/random/5") //fetch request is made to the given url where it returns a response
-    .then((res) => res.json()) //the response is converted to Json using 'res.json()'
-    .then((data) => { //here 'data' object containing the dog images are extracted
-      this.setState({dogs: data.message}) //this is called to update the component 'dogs' state with fetched data
+    fetch("https://dog.ceo/api/breeds/image/random/5")          //fetch request is made to the given url where it returns a response
+    .then((res) => res.json())                                  //the response is converted to Json using 'res.json()'
+    .then((data) => {                                           //here 'data' object containing the dog images are extracted
+      this.setState({dogs: data.message})                       //this is called to update the component 'dogs' state with fetched data
     })
   }
 
