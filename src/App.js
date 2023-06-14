@@ -1,4 +1,52 @@
-//Using the React Lifecycle method
+import React, { useState, useEffect } from "react";
+import DogList from "./DogList";
+import './App.css';
+
+const App = () => {
+  const [dogs, setDogs] = useState([]);
+  const [counter, setCounter] = useState(4);
+
+  const fetchDogImages = () => {
+    fetch(`https://dog.ceo/api/breeds/image/random/${counter}`)
+    .then((res) => res.json())
+    .then((data) => {
+      setDogs(data.message);
+    });
+  };
+
+  useEffect(() => {
+    fetchDogImages();
+  }, [counter]);
+
+  const increment = () =>{
+    setCounter(counter + 1);
+  };
+
+  const decrement = () => {
+    if(counter > 1) {
+      setCounter(counter - 1);
+    }
+  };
+
+  return(
+    <div className="body">
+      <h1 className="title">WELCOME TO THE WORLD OF DOGS</h1>
+      <div className="counter">
+        <button className="counter-btn" onClick={decrement}>-</button>
+        <span className="counter-value">{counter}</span>
+        <button className="counter-btn" onClick={increment}>+</button>
+      </div>
+      <div className="image-layout">
+        <DogList dogs={dogs} />
+      </div>
+    </div>
+  );
+};
+
+export default App;
+
+
+/* //Using the React Lifecycle method
 
 import React, { Component } from 'react';
 import DogList from './DogList';
@@ -33,4 +81,4 @@ class App extends Component{
   }
 }
 
-export default App;
+export default App; */
