@@ -1,84 +1,114 @@
-import React, { useState, useEffect } from "react";
-import DogList from "./DogList";
+import React, { useState, useEffect, useCallback } from "react";
+import SignUp from './Signup';
+import Login from './Login';
+import DogList from './Doglist';
 import './App.css';
 
 const App = () => {
   const [dogs, setDogs] = useState([]);
-  const [counter, setCounter] = useState(4);
+  const [counter, setCounter] = useState(1);
+  const [route, setRoute] = useState('');
+  const [sessionToken, setSessionToken] = useState('');
 
-  const fetchDogImages = () => {
+  const fetchDogImages = useCallback(() => {
     fetch(`https://dog.ceo/api/breeds/image/random/${counter}`)
-    .then((res) => res.json())
-    .then((data) => {
-      setDogs(data.message);
-    });
-  };
+      .then((res) => res.json())
+      .then((data) => {
+        setDogs(data.message);
+      });
+  }, [counter]);
 
   useEffect(() => {
     fetchDogImages();
-  }, [counter]);
+  }, [fetchDogImages]);
 
-  const increment = () =>{
-    setCounter(counter + 1);
+  useEffect(() => {
+    // Retrieve the session token from localStorage on component mount
+    const storedSessionToken = localStorage.getItem('sessionToken');
+    if (storedSessionToken) {
+      setSessionToken(storedSessionToken);
+    }
+  }, []);
+
+  function increment() {
+    if (route === 'login') {
+      setCounter(counter + 1);
+    } else {
+      setCounter(counter);
+      alert('Log in to generate more such images');
+      setRoute('login');
+    }
+  }  
+
+  function decrement() {
+    if (counter > 1) {
+      setCounter(counter - 1);
+    }
+  }
+
+  const handleLogin = (token) => {
+    setSessionToken(token);
+    localStorage.setItem('sessionToken', token);
+    setRoute('home');
   };
 
-  const decrement = () => {
-    if(counter > 1) {
-      setCounter(counter - 1);
+  const handleLogout = () => {
+    setSessionToken('');
+    localStorage.removeItem('sessionToken');
+    setRoute('login');
+  };
+
+  const renderContent = () => {
+    switch (route) {
+      case 'home':
+        return (
+          <div className="body">
+            <h1 className="title">WELCOME TO THE WORLD OF DOGS</h1>
+            <div className="counter">
+              <button className="counter-btn" onClick={decrement}>-</button>
+              <span className="counter-value">{counter}</span>
+              <button className="counter-btn" onClick={increment}>+</button>
+            </div>
+            <div className="image-layout">
+              <DogList dogs={dogs} />
+            </div>
+            {sessionToken && (
+              <button className="logout-btn" onClick={handleLogout}>Logout</button>
+            )}
+          </div>
+        );
+      case 'signup':
+        return <SignUp />;
+      case 'login':
+        return <Login onLogin={handleLogin} />;
+      default:
+        return null;
     }
   };
 
-  return(
-    <div className="body">
-      <h1 className="title">WELCOME TO THE WORLD OF DOGS</h1>
-      <div className="counter">
-        <button className="counter-btn" onClick={decrement}>-</button>
-        <span className="counter-value">{counter}</span>
-        <button className="counter-btn" onClick={increment}>+</button>
-      </div>
-      <div className="image-layout">
-        <DogList dogs={dogs} />
-      </div>
+  return (
+    <div>
+      <nav className="nav">
+        <ul className="nav-list">
+          <li>
+            <button className="nav-btn" onClick={() => setRoute('home')}>Home</button>
+          </li>
+          {!sessionToken && (
+            <>
+              <li>
+                <button className="nav-btn" onClick={() => setRoute('signup')}>Sign Up</button>
+              </li>
+              <li>
+                <button className="nav-btn" onClick={() => setRoute('login')}>Login</button>
+              </li>
+            </>
+          )}
+        </ul>
+      </nav>
+
+      {renderContent()}
     </div>
   );
 };
 
 export default App;
-
-
-/* //Using the React Lifecycle method
-
-import React, { Component } from 'react';
-import DogList from './DogList';
-import './App.css';
-
-
-//Basically here "App" component is defined as a class that extends the class from react
-// It has a constructor that initializes the component state with an empty array of 'dogs'.
-class App extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      dogs: []
-    }
-  }
-//This lifecycle is invoked automatically after component is mounted
-  componentDidMount() {
-    fetch("https://dog.ceo/api/breeds/image/random/5") //fetch request is made to the given url where it returns a response
-    .then((res) => res.json()) //the response is converted to Json using 'res.json()'
-    .then((data) => { //here 'data' object containing the dog images are extracted
-      this.setState({dogs: data.message}) //this is called to update the component 'dogs' state with fetched data
-    })
-  }
-
-  render() {
-    return (
-      <div>
-        <h1 style={{textAlign: "center"}}>Welcome to dog world</h1>
-        <DogList dogs={this.state.dogs} />
-      </div>
-    );
-  }
-}
-
-export default App; */
