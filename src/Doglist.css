@@ -4,3 +4,9 @@
     justify-content: space-evenly;
     flex-wrap: wrap;
 }
+
+.dog-image{
+    width: 400px; /* Adjust the width as needed */
+  height: 200px;
+  margin: 10px;
+}
