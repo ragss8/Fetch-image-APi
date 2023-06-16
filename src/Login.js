@@ -34,7 +34,7 @@ const Login = () => {
     switch (route) {
       case 'login':
         return (
-          <div className="container login"> {/* Added "login" class name */}
+          <div className="container login">
             <h2>Login</h2>
             <form onSubmit={handleLogin}>
               <input
