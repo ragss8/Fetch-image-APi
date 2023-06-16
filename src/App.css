@@ -1,5 +1,6 @@
 .body {
-  background: linear-gradient(to right, #8eea66, #1d25cd);
+  /* background: linear-gradient(to right, #8eea66, #1d25cd); */
+  background: linear-gradient(to bottom, #040f1a, #031429);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -42,13 +43,15 @@
 
 .image-layout {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
+  max-width: 800px; /* Adjust the maximum width as needed */
+  margin: 0 auto;
 }
 
 .image-layout img {
   margin: 10px;
-  width: 200px;
+  width: calc(25% - 20px); /* Distribute width equally for up to 4 images */
   height: 200px;
   object-fit: cover;
   border-radius: 5%;
@@ -58,4 +61,62 @@
 
 .image-layout img:hover {
   transform: scale(1.8);
+}
+
+
+nav {
+  background-color: #33333350;
+  padding: 10px;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+}
+
+nav ul li {
+  margin: 0 10px;
+}
+
+nav ul li button {
+  font-size: 16px;
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+nav ul li button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+
+nav ul li button:hover {
+  transform: translateY(-3px);
+}
+
+nav ul li button:hover::before {
+  transform: scaleX(1);
+}
+
+nav ul li button:active {
+  transform: translateY(0);
+}
+
+nav ul li button:active::before {
+  transform: scaleX(0);
 }
