@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import App from './App';
+import Home from './Home';
+import { useHistory } from 'react-router-dom';
+
 import './Login.css';
 
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,19 +20,24 @@ const Login = ({ onLogin }) => {
       if (response.status === 200) {
         const receivedSessionToken = response.data.session_token;
         onLogin(receivedSessionToken); // Notify the parent component about successful login
+        alert('Login successful');
+        setLoggedIn(true);
       } else {
         console.log('Login failed:', response.data.message);
       }
-      alert('Login successful');
     } catch (error) {
       console.error('Login error:', error);
     }
   };
 
+  if (loggedIn) {
+    return <Home />;
+  }
+
   return (
     <div className="container login">
       <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+      <form onLogin={handleLogin}>
         <input
           type="text"
           placeholder="Email"
