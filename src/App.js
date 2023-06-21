@@ -7,10 +7,9 @@ import './App.css';
 const App = () => {
   const [dogs, setDogs] = useState([]);
   const [counter, setCounter] = useState(1);
-  const [route, setRoute] = useState('');
-  const [sessionToken, setSessionToken] = useState('');
+  const [route, setRoute] = useState('home');
 
-  const fetchDogImages = useCallback(() => {
+    const fetchDogImages = useCallback(() => {
     fetch(`https://dog.ceo/api/breeds/image/random/${counter}`)
       .then((res) => res.json())
       .then((data) => {
@@ -21,14 +20,6 @@ const App = () => {
   useEffect(() => {
     fetchDogImages();
   }, [fetchDogImages]);
-
-  useEffect(() => {
-    // Retrieve the session token from localStorage on component mount
-    const storedSessionToken = localStorage.getItem('sessionToken');
-    if (storedSessionToken) {
-      setSessionToken(storedSessionToken);
-    }
-  }, []);
 
   function increment() {
     if (route === 'login') {
@@ -46,18 +37,6 @@ const App = () => {
     }
   }
 
-  const handleLogin = (token) => {
-    setSessionToken(token);
-    localStorage.setItem('sessionToken', token);
-    setRoute('home');
-  };
-
-  const handleLogout = () => {
-    setSessionToken('');
-    localStorage.removeItem('sessionToken');
-    setRoute('login');
-  };
-
   const renderContent = () => {
     switch (route) {
       case 'home':
@@ -72,15 +51,12 @@ const App = () => {
             <div className="image-layout">
               <DogList dogs={dogs} />
             </div>
-            {sessionToken && (
-              <button className="logout-btn" onClick={handleLogout}>Logout</button>
-            )}
           </div>
         );
       case 'signup':
         return <SignUp />;
       case 'login':
-        return <Login onLogin={handleLogin} />;
+        return <Login />;
       default:
         return null;
     }
@@ -93,16 +69,12 @@ const App = () => {
           <li>
             <button className="nav-btn" onClick={() => setRoute('home')}>Home</button>
           </li>
-          {!sessionToken && (
-            <>
-              <li>
-                <button className="nav-btn" onClick={() => setRoute('signup')}>Sign Up</button>
-              </li>
-              <li>
-                <button className="nav-btn" onClick={() => setRoute('login')}>Login</button>
-              </li>
-            </>
-          )}
+          <li>
+            <button className="nav-btn" onClick={() => setRoute('signup')}>Sign Up</button>
+          </li>
+          <li>
+            <button className="nav-btn" onClick={() => setRoute('login')}>Login</button>
+          </li>
         </ul>
       </nav>
 
