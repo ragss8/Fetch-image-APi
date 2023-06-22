@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Home from './Home';
-import { useHistory } from 'react-router-dom';
-
 import './Login.css';
 
-const Login = ({ onLogin }) => {
+const Login = ({ setIsLoggedIn, setRoute }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loggedIn, setLoggedIn] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,10 +14,9 @@ const Login = ({ onLogin }) => {
         password,
       });
       if (response.status === 200) {
-        const receivedSessionToken = response.data.session_token;
-        onLogin(receivedSessionToken); // Notify the parent component about successful login
-        alert('Login successful');
-        setLoggedIn(true);
+        console.log('Login successful');
+        setIsLoggedIn(true);
+        setRoute('home');
       } else {
         console.log('Login failed:', response.data.message);
       }
@@ -30,31 +25,33 @@ const Login = ({ onLogin }) => {
     }
   };
 
-  if (loggedIn) {
-    return <Home />;
-  }
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleLogin(e);
+    }
+  };
 
   return (
     <div className="container login">
       <h2>Login</h2>
-      <form onLogin={handleLogin}>
+      <form onSubmit={handleLogin}>
         <input
           type="text"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          onKeyPress={handleKeyPress} 
         />
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyPress={handleKeyPress} 
         />
         <button type="submit">Login</button>
       </form>
-      <p>
-        <h4>IF YOU ARE A NEW USER, PLEASE SIGNUP</h4>
-      </p>
+      <h5>IF YOU ARE A NEW USER, PLEASE SIGNUP</h5>
     </div>
   );
 };
