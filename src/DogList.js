@@ -1,17 +1,17 @@
 import React from "react";
-import Dog from './Dog'
-import './Doglist.css';
+import Dog from './Dog';
+import './DogList.css';
 
-const DogsList = (props) => {  //here it accepts props as it's parameter
-    const dogsArray = props.dogs.map((dogsURL) => {
-        return <Dog url = {dogsURL} />
-    })
+const DogList = (props) => {
+  const dogsArray = props.dogs.map((dogsURL, index) => {
+    return <Dog key={index} url={dogsURL} />;
+  });
 
-return(
+  return (
     <div className="container">
-        {dogsArray}
+      {dogsArray}
     </div>
-)
-}
+  );
+};
 
-export default DogsList;
+export default DogList;
