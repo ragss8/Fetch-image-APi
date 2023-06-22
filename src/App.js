@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useCallback } from "react";
 import SignUp from './Signup';
 import Login from './Login';
-import DogList from './Doglist';
+import Main from './Main';
+import DogList from './DogList';
 import './App.css';
 
 const App = () => {
   const [dogs, setDogs] = useState([]);
   const [counter, setCounter] = useState(1);
   const [route, setRoute] = useState('home');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const fetchDogImages = useCallback(() => {
+  const fetchDogImages = useCallback(() => {
     fetch(`https://dog.ceo/api/breeds/image/random/${counter}`)
       .then((res) => res.json())
       .then((data) => {
@@ -22,20 +24,25 @@ const App = () => {
   }, [fetchDogImages]);
 
   function increment() {
-    if (route === 'login') {
+    if (isLoggedIn || route === 'login') {
       setCounter(counter + 1);
     } else {
       setCounter(counter);
-      alert('Log in to generate more such images');
-      setRoute('login');
+      alert('Sign up to generate more images');
+      setRoute('signup');
     }
-  }  
+  }
 
   function decrement() {
     if (counter > 1) {
       setCounter(counter - 1);
     }
   }
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setRoute('login');
+  };
 
   const renderContent = () => {
     switch (route) {
@@ -54,9 +61,15 @@ const App = () => {
           </div>
         );
       case 'signup':
-        return <SignUp />;
+        return <SignUp setRoute={setRoute} />;
       case 'login':
-        return <Login />;
+        return <Login setIsLoggedIn={setIsLoggedIn} setRoute={setRoute} />;
+      case 'main':
+        return (
+          <div>
+            <Main handleLogout={handleLogout} />
+          </div>
+        );
       default:
         return null;
     }
@@ -69,12 +82,21 @@ const App = () => {
           <li>
             <button className="nav-btn" onClick={() => setRoute('home')}>Home</button>
           </li>
-          <li>
-            <button className="nav-btn" onClick={() => setRoute('signup')}>Sign Up</button>
-          </li>
-          <li>
-            <button className="nav-btn" onClick={() => setRoute('login')}>Login</button>
-          </li>
+          {!isLoggedIn && (
+            <React.Fragment>
+              <li>
+                <button className="nav-btn" onClick={() => setRoute('signup')}>Sign Up</button>
+              </li>
+              <li>
+                <button className="nav-btn" onClick={() => setRoute('login')}>Login</button>
+              </li>
+            </React.Fragment>
+          )}
+          {isLoggedIn && (
+            <li>
+              <button className="nav-btn" onClick={handleLogout}>Logout</button>
+            </li>
+          )}
         </ul>
       </nav>
 
